@@ -1,5 +1,5 @@
 {
-  "name": "nest-monorepo",
+  "name": "nest-ts-monorepo",
   "private": true,
   "packageManager": "yarn@3.2.3",
   "workspaces": [
