@@ -5,11 +5,10 @@ import {
   Post,
   UseGuards,
 } from "@nestjs/common";
-import { UserPayload } from "./interfaces/payload.interface";
-import { User } from "./decorators/payload.decorator";
-import { LocalAuthGuard } from "../../core/guards/local-auth.guard";
+import { LocalAuthGuard } from "../../core/guards";
 import { CreateUserDto, UserService } from "../user";
 import { AuthService } from "./auth.service";
+import { CommonUtility } from "../../core/utils/common.utility";
 
 @Controller("auth")
 export class AuthController {
@@ -30,8 +29,19 @@ export class AuthController {
   }
 
   @UseGuards(LocalAuthGuard)
-  @Post("/signin")
-  signin(@User() user: UserPayload) {
-    return this.authService.generateJwt(user);
+  @Post("/login")
+  async login(@Body() dto: CreateUserDto) {
+    const user = await this.authService.validateUser(
+      dto.username,
+      dto.password
+    );
+
+    if (!user) {
+      throw new ForbiddenException();
+    }
+
+    const { id, username, role } = user;
+
+    return this.authService.generateJwt({ id, username, role });
   }
 }

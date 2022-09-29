@@ -8,4 +8,11 @@ export class CommonUtility {
     const hash = pbkdf2Sync(input, salt, 1000, 64, "sha256").toString("hex");
     return { hash, salt };
   }
+  public static transformMongoId(payload: Record<string, any>) {
+    if ("_id" in payload) {
+      const { _id, ...rest } = payload;
+      return { id: _id, ...rest };
+    }
+    return payload;
+  }
 }

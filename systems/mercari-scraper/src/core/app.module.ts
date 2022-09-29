@@ -6,6 +6,8 @@ import { APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { ResponseInterceptor } from "./interceptors/response.interceptor";
 import mongoConfig from "../config/mongo.config";
 import secretsConfig from "../config/secrets.config";
+import { UserModule } from "../features/user";
+import { AuthModule } from "../features/auth";
 
 @Module({
   imports: [
@@ -18,10 +20,11 @@ import secretsConfig from "../config/secrets.config";
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         uri: config.get<string>("mongo.url"),
-        useFindAndModify: false,
       }),
     }),
     ScraperInfoModule,
+    UserModule,
+    AuthModule,
   ],
   providers: [
     {

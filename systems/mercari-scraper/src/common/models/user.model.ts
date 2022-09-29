@@ -37,6 +37,13 @@ export type UserDocument = User & Document;
 
 export const UserModel = SchemaFactory.createForClass(User);
 
+UserModel.set("toJSON", {
+  transform: (doc, ret) => {
+    ret.id = ret._id.toString();
+    delete ret._id;
+  },
+});
+
 export const USER_MODEL_TOKEN = User.name;
 
 export const UserDefinition: ModelDefinition = {

@@ -42,6 +42,7 @@ export class UserService {
       .skip(skip || SEARCH_DEFAULT_SKIP)
       .limit(limit || SEARCH_DEFAULT_LIMIT)
       .exec();
+
     return documents.map((document) => document?.toJSON());
   }
 
