@@ -9,8 +9,8 @@ import {
 import {
   USER_PASSWORD_MAX_LEN,
   USER_PASSWORD_MIN_LEN,
-} from "../../../common/constants/user.const";
-import { Role } from "../../../common/enums/role.enum";
+} from "../constants/user.const";
+import { Role } from "../enums/role.enum";
 
 export class CreateUserDto {
   @IsString()

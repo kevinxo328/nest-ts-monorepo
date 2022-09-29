@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { USER_MODEL_TOKEN, UserDocument } from "../../common/models/user.model";
 import { Model, FilterQuery } from "mongoose";
-import { CreateUserDto } from "./dto/create-user.dto";
+import { CreateUserDto } from "../../common/dtos";
 import { CommonUtility } from "../../core/utils/common.utility";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { UpdateUserDto } from "./dtos/update-user.dto";
 import { SearchDto } from "../../core/bases";
 import {
   SEARCH_DEFAULT_LIMIT,
@@ -68,10 +68,5 @@ export class UserService {
 
   public existUser(filter: FilterQuery<UserDocument>) {
     return this.userModel.exists(filter);
-  }
-
-  public async hasUser() {
-    const count = await this.userModel.estimatedDocumentCount().exec();
-    return count > 0;
   }
 }

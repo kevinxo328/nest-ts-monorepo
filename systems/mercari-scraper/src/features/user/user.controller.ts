@@ -16,8 +16,8 @@ import { SearchPipe } from "../../core/pipes";
 import { JwtAuthGuard } from "../../core/guards";
 import { SearchDto } from "../../core/bases";
 
-import { CreateUserDto } from "./dto/create-user.dto";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { CreateUserDto } from "../../common/dtos";
+import { UpdateUserDto } from "./dtos/update-user.dto";
 
 import { UserService } from "./user.service";
 
@@ -31,6 +31,7 @@ export class UserController {
     return this.userService.findUsers(query, "-password");
   }
 
+  // TODO：和 auth/signup 邏輯共用，看要如何整理
   @Post()
   async createUser(@Body() dto: CreateUserDto) {
     const { username } = dto;

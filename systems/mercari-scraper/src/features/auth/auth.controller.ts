@@ -1,5 +1,6 @@
 import {
   Body,
+  ConflictException,
   Controller,
   ForbiddenException,
   Post,
@@ -8,7 +9,6 @@ import {
 import { LocalAuthGuard } from "../../core/guards";
 import { CreateUserDto, UserService } from "../user";
 import { AuthService } from "./auth.service";
-import { CommonUtility } from "../../core/utils/common.utility";
 
 @Controller("auth")
 export class AuthController {
@@ -19,13 +19,18 @@ export class AuthController {
 
   @Post("/signup")
   async signup(@Body() dto: CreateUserDto) {
-    const hasUser = await this.userService.hasUser();
-    if (hasUser) {
-      throw new ForbiddenException();
+    const { username } = dto;
+    const exist = await this.userService.existUser({
+      $or: [{ username }],
+    });
+
+    if (exist) {
+      throw new ConflictException("username or email is already exist.");
     }
+
     const user = await this.userService.createUser(dto);
-    const { _id: id, username, role } = user;
-    return this.authService.generateJwt({ id, username, role });
+    const { password, ...result } = user;
+    return result;
   }
 
   @UseGuards(LocalAuthGuard)
