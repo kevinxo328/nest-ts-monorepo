@@ -17,10 +17,18 @@ export class AuthService {
       password,
       user?.password?.salt
     );
+
     if (!user || hash !== user?.password?.hash) {
       return null;
     }
-    return user;
+
+    const result: UserPayload = {
+      id: user.id,
+      username: user.username,
+      role: user.role,
+    };
+
+    return result;
   }
 
   public generateJwt(payload: UserPayload) {

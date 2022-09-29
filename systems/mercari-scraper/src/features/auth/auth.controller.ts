@@ -2,13 +2,14 @@ import {
   Body,
   ConflictException,
   Controller,
-  ForbiddenException,
   Post,
   UseGuards,
 } from "@nestjs/common";
-import { LocalAuthGuard } from "../../core/guards";
 import { CreateUserDto, UserService } from "../user";
 import { AuthService } from "./auth.service";
+import { LocalAuthGuard } from "../../core/guards";
+import { User } from "./decorators/payload.decorator";
+import { UserPayload } from "./interfaces/payload.interface";
 
 @Controller("auth")
 export class AuthController {
@@ -35,18 +36,7 @@ export class AuthController {
 
   @UseGuards(LocalAuthGuard)
   @Post("/login")
-  async login(@Body() dto: CreateUserDto) {
-    const user = await this.authService.validateUser(
-      dto.username,
-      dto.password
-    );
-
-    if (!user) {
-      throw new ForbiddenException();
-    }
-
-    const { id, username, role } = user;
-
-    return this.authService.generateJwt({ id, username, role });
+  async login(@User() user: UserPayload) {
+    return this.authService.generateJwt(user);
   }
 }
