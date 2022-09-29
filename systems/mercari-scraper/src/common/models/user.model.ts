@@ -21,6 +21,7 @@ export class User {
     type: raw({
       hash: String,
       salt: String,
+      _id: false,
     }),
   })
   password: { hash: string; salt: string };
