@@ -20,6 +20,7 @@ import { AuthModule } from "../features/auth";
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         uri: config.get<string>("mongo.url"),
+        dbName: config.get<string>("mongo.dbName"),
       }),
     }),
     ScraperInfoModule,
