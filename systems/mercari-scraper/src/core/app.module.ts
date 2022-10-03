@@ -1,5 +1,4 @@
 import { Module, ValidationPipe } from "@nestjs/common";
-import { ScraperInfoModule } from "../features/scraper-info/scraper-info.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { MongooseModule } from "@nestjs/mongoose";
 import { APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
@@ -8,6 +7,7 @@ import mongoConfig from "../config/mongo.config";
 import secretsConfig from "../config/secrets.config";
 import { UserModule } from "../features/user";
 import { AuthModule } from "../features/auth";
+import { ScraperModule } from "../features/scraper/scraper.module";
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { AuthModule } from "../features/auth";
         dbName: config.get<string>("mongo.dbName"),
       }),
     }),
-    ScraperInfoModule,
+    ScraperModule,
     UserModule,
     AuthModule,
   ],

@@ -13,6 +13,7 @@ import { Role } from "../enums/role.enum";
 export class User {
   @Prop({
     required: true,
+    unique: true,
   })
   username: string;
 
