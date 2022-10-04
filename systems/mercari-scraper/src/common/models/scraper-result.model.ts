@@ -22,6 +22,13 @@ export type ScraperResultDocument = ScraperResult & Document;
 
 export const ScraperResultModel = SchemaFactory.createForClass(ScraperResult);
 
+ScraperResultModel.set("toJSON", {
+  transform: (doc, ret) => {
+    ret.id = ret._id.toString();
+    delete ret._id;
+  },
+});
+
 export const SCRAPER_RESULT_TOKEN = ScraperResult.name;
 
 export const ScraperResultDefinition: ModelDefinition = {
