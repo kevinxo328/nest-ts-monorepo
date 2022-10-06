@@ -26,7 +26,7 @@ export class AuthController {
     });
 
     if (exist) {
-      throw new ConflictException("username or email is already exist.");
+      throw new ConflictException("帳號已存在");
     }
 
     const user = await this.userService.createUser(dto);
