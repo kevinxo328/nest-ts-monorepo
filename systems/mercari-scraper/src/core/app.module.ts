@@ -4,7 +4,7 @@ import { MongooseModule } from "@nestjs/mongoose";
 import { APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { ResponseInterceptor } from "./interceptors/response.interceptor";
 import mongoConfig from "../config/mongo.config";
-import secretsConfig from "../config/secrets.config";
+import secretsConfig from "../config/jwt.config";
 import { UserModule } from "../features/user";
 import { AuthModule } from "../features/auth";
 import { ScraperModule } from "../features/scraper/scraper.module";
@@ -19,8 +19,8 @@ import { ScraperModule } from "../features/scraper/scraper.module";
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
-        uri: config.get<string>("mongo.url"),
-        dbName: config.get<string>("mongo.dbName"),
+        uri: config.get("mongo.url"),
+        dbName: config.get("mongo.dbName"),
       }),
     }),
     ScraperModule,

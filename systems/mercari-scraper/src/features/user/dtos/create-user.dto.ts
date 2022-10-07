@@ -9,19 +9,25 @@ import {
 import {
   USER_PASSWORD_MAX_LEN,
   USER_PASSWORD_MIN_LEN,
-} from "../constants/user.const";
-import { Role } from "../enums/role.enum";
+} from "../../../common/constants/user.const";
+import { Role } from "../../../common/enums/role.enum";
 
 export class CreateUserDto {
   @IsString()
-  public readonly username: string;
+  readonly username: string;
 
   @IsString()
   @MinLength(USER_PASSWORD_MIN_LEN)
   @MaxLength(USER_PASSWORD_MAX_LEN)
-  public readonly password: string;
+  readonly password: string;
 
   @IsOptional()
   @IsEnum(Role)
-  public readonly role?: Role;
+  readonly role: Role;
+
+  @IsOptional()
+  readonly refreshToken?: {
+    hash: string;
+    salt: string;
+  };
 }

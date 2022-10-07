@@ -3,7 +3,7 @@ import { InjectModel } from "@nestjs/mongoose";
 import {
   SCRAPER_RESULT_TOKEN,
   ScraperResultDocument,
-} from "../../common/models/scraper-result.model";
+} from "./models/scraper-result.model";
 import { FilterQuery, Model } from "mongoose";
 import { SearchDto } from "../../core/bases";
 import {
@@ -13,7 +13,7 @@ import {
 import {
   SCRAPER_CONDITION_TOKEN,
   ScraperConditionDocument,
-} from "../../common/models/scraper-condition";
+} from "./models/scraper-condition.model";
 import { CreateConditionDto } from "./dtos/create-condition.dto";
 import { UpdateConditionDto } from "./dtos/update-condition.dto";
 

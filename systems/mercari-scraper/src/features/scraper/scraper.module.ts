@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 import { ScraperService } from "./scraper.service";
 import { ScraperController } from "./scraper.controller";
-import { ScraperResultDefinition } from "../../common/models/scraper-result.model";
+import { ScraperResultDefinition } from "./models/scraper-result.model";
 import { MongooseModule } from "@nestjs/mongoose";
-import { ScraperConditionDefinition } from "../../common/models/scraper-condition";
+import { ScraperConditionDefinition } from "./models/scraper-condition.model";
 
 @Module({
   imports: [

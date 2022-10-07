@@ -1,8 +1,8 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
-import { USER_MODEL_TOKEN, UserDocument } from "../../common/models/user.model";
+import { USER_MODEL_TOKEN, UserDocument } from "./models/user.model";
 import { Model, FilterQuery } from "mongoose";
-import { CreateUserDto } from "../../common/dtos";
+import { CreateUserDto } from "./dtos/create-user.dto";
 import { CommonUtility } from "../../core/utils/common.utility";
 import { UpdateUserDto } from "./dtos/update-user.dto";
 import { SearchDto } from "../../core/bases";
@@ -18,7 +18,7 @@ export class UserService {
     private readonly userModel: Model<UserDocument>
   ) {}
 
-  public async createUser(user: CreateUserDto) {
+  async createUser(user: CreateUserDto) {
     const { username, role } = user;
     const password = CommonUtility.encryptBySalt(user.password);
     const document = await this.userModel.create({
@@ -29,13 +29,13 @@ export class UserService {
     return document?.toJSON();
   }
 
-  public async findUser(filter: FilterQuery<UserDocument>, select?: any) {
+  async findUser(filter: FilterQuery<UserDocument>, select?: any) {
     const query = this.userModel.findOne(filter).select(select);
     const document = await query.exec();
     return document?.toJSON();
   }
 
-  public async findUsers(search: SearchDto, select?: any) {
+  async findUsers(search: SearchDto, select?: any) {
     const { skip, limit } = search;
     const query = this.userModel.find().select(select);
     const documents = await query
@@ -46,7 +46,7 @@ export class UserService {
     return documents.map((document) => document?.toJSON());
   }
 
-  public async deleteUser(userId: string) {
+  async deleteUser(userId: string) {
     const document = await this.userModel.findByIdAndRemove(userId).exec();
     if (!document) {
       return;
@@ -54,7 +54,7 @@ export class UserService {
     return {};
   }
 
-  public async updateUser(userId: string, data: UpdateUserDto, select?: any) {
+  async updateUser(userId: string, data: UpdateUserDto, select?: any) {
     const obj: Record<string, any> = { ...data };
     if (obj.password) {
       obj.password = CommonUtility.encryptBySalt(obj.password);
@@ -66,7 +66,13 @@ export class UserService {
     return document?.toJSON();
   }
 
-  public existUser(filter: FilterQuery<UserDocument>) {
+  async updateRefreshToken(userId: string, refreshToken: string) {
+    return this.updateUser(userId, {
+      refreshToken: CommonUtility.encryptBySalt(refreshToken),
+    });
+  }
+
+  existUser(filter: FilterQuery<UserDocument>) {
     return this.userModel.exists(filter);
   }
 }

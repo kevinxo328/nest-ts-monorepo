@@ -7,7 +7,7 @@ import {
 } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { Role } from "../enums/role.enum";
+import { Role } from "../../../common/enums/role.enum";
 
 @Schema({ versionKey: false })
 export class User {
@@ -33,6 +33,15 @@ export class User {
     default: Role.USER,
   })
   role: Role;
+
+  @Prop({
+    type: raw({
+      hash: String,
+      salt: String,
+      _id: false,
+    }),
+  })
+  refreshToken?: { hash: string; salt: string };
 }
 
 export type UserDocument = User & Document;

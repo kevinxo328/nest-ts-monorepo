@@ -13,15 +13,15 @@ import {
 } from "@nestjs/common";
 
 import { SearchPipe } from "../../core/pipes";
-import { JwtAuthGuard } from "../../core/guards";
+import { AccessTokenGuard } from "../../core/guards";
 import { SearchDto } from "../../core/bases";
 
-import { CreateUserDto } from "../../common/dtos";
+import { CreateUserDto } from "./dtos/create-user.dto";
 import { UpdateUserDto } from "./dtos/update-user.dto";
 
 import { UserService } from "./user.service";
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(AccessTokenGuard)
 @Controller("users")
 export class UserController {
   constructor(private readonly userService: UserService) {}

@@ -11,14 +11,14 @@ import {
   Query,
   UseGuards,
 } from "@nestjs/common";
-import { JwtAuthGuard } from "../../core/guards";
+import { AccessTokenGuard } from "../../core/guards";
 import { ScraperService } from "./scraper.service";
 import { SearchPipe } from "../../core/pipes";
 import { SearchDto } from "../../core/bases";
 import { User, UserPayload } from "../auth";
 import { CreateConditionPayload } from "./interfaces/payload.interface";
 
-@UseGuards(JwtAuthGuard)
+@UseGuards(AccessTokenGuard)
 @Controller("scraper")
 export class ScraperController {
   constructor(private readonly service: ScraperService) {}
