@@ -8,6 +8,7 @@ import secretsConfig from "../config/jwt.config";
 import { UserModule } from "../features/user";
 import { AuthModule } from "../features/auth";
 import { ScraperModule } from "../features/scraper/scraper.module";
+import { AppController } from "./app.controller";
 
 @Module({
   imports: [
@@ -37,5 +38,6 @@ import { ScraperModule } from "../features/scraper/scraper.module";
       useClass: ResponseInterceptor,
     },
   ],
+  controllers: [AppController],
 })
 export class AppModule {}
