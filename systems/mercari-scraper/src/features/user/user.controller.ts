@@ -20,6 +20,7 @@ import { CreateUserDto } from "./dtos/create-user.dto";
 import { UpdateUserDto } from "./dtos/update-user.dto";
 
 import { UserService } from "./user.service";
+import isPrismaError from "../../utils/IsPrismaError";
 
 @UseGuards(AccessTokenGuard)
 @Controller("users")
@@ -28,41 +29,52 @@ export class UserController {
 
   @Get()
   async getUsers(@Query(SearchPipe) query: SearchDto) {
-    return this.userService.findUsers(query, "-password");
+    const users = await this.userService.findUsers({});
+
+    return users.map(({ hash, salt, rtHash, rtSalt, ...result }) => result);
   }
 
   // TODO：和 auth/signup 邏輯共用，看要如何整理
   @Post()
   async createUser(@Body() dto: CreateUserDto) {
     const { username } = dto;
-    const exist = await this.userService.existUser({
-      $or: [{ username }],
-    });
+    const exist = await this.userService.findUser({ username });
 
     if (exist) {
       throw new ConflictException("username or email is already exist.");
     }
 
     const user = await this.userService.createUser(dto);
-    const { password, ...result } = user;
+    const { hash, salt, rtHash, rtSalt, ...result } = user;
     return result;
   }
 
   @Delete(":id")
   async deleteUser(@Param("id") id: string) {
-    const response = await this.userService.deleteUser(id);
-    if (!response) {
+    const user = await this.userService.deleteUser({ id });
+
+    if (isPrismaError(user)) {
       throw new ForbiddenException();
     }
-    return response;
+
+    const { hash, salt, rtHash, rtSalt, ...result } = user;
+
+    return result;
   }
 
   @Patch(":id")
   async updateUser(@Param("id") id: string, @Body() dto: UpdateUserDto) {
-    const user = await this.userService.updateUser(id, dto, "-password");
-    if (!user) {
+    const user = await this.userService.updateUser({
+      data: dto,
+      where: { id },
+    });
+
+    if (isPrismaError(user)) {
       throw new ForbiddenException();
     }
-    return user;
+
+    const { hash, salt, rtHash, rtSalt, ...result } = user;
+
+    return result;
   }
 }

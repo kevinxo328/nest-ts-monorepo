@@ -23,7 +23,7 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsEnum(Role)
-  readonly role: Role;
+  readonly role?: Role;
 
   @IsOptional()
   readonly refreshToken?: {
