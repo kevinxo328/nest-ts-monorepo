@@ -6,12 +6,12 @@ export class CreateConditionDto {
 
   @IsOptional()
   @IsInt()
-  public readonly price_min?: number;
+  public readonly priceMin?: number;
 
   @IsOptional()
   @IsInt()
-  public readonly price_max?: number;
+  public readonly priceMax?: number;
 
   @IsString()
-  public readonly user: string;
+  public readonly userId: string;
 }

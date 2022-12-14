@@ -17,6 +17,7 @@ import { SearchPipe } from "../../core/pipes";
 import { SearchDto } from "../../core/bases";
 import { User, UserPayload } from "../auth";
 import { CreateConditionPayload } from "./interfaces/payload.interface";
+import Utils from "../../utils/utils";
 
 @UseGuards(AccessTokenGuard)
 @Controller("scraper")
@@ -25,7 +26,7 @@ export class ScraperController {
 
   @Get()
   async getResult(@Query(SearchPipe) query: SearchDto) {
-    return await this.service.findResults(query, "-_id");
+    return await this.service.findResults({});
   }
 
   @Post("/condition")
@@ -33,16 +34,18 @@ export class ScraperController {
     @Body() payload: CreateConditionPayload,
     @User() user: UserPayload
   ) {
-    const exist = await this.service.existCondition({
-      user: user.id,
-      keyword: payload.keyword,
+    const exist = await this.service.findConditions({
+      where: {
+        userId: user.id,
+        keyword: payload.keyword,
+      },
     });
 
-    if (exist) {
+    if (exist.length > 0) {
       throw new ConflictException("keyword 已存在");
     }
 
-    return await this.service.createCondition({ ...payload, user: user.id });
+    return this.service.createCondition({ ...payload, userId: user.id });
   }
 
   @Get("conditions")
@@ -50,7 +53,7 @@ export class ScraperController {
     @User() user: UserPayload,
     @Query(SearchPipe) query: SearchDto
   ) {
-    return await this.service.findConditions({ user: user.id }, query);
+    return await this.service.findConditions({ where: { userId: user.id } });
   }
 
   @Patch("/condition/:id")
@@ -58,15 +61,19 @@ export class ScraperController {
     @Body() payload: CreateConditionPayload,
     @User() user: UserPayload
   ) {
-    return await this.service.createCondition({ ...payload, user: user.id });
+    return await this.service.createCondition({ ...payload, userId: user.id });
   }
 
   @Delete("/condition/:id")
   async deleteCondition(@Param("id") id: string, @User() user: UserPayload) {
-    const condition = await this.service.deleteCondition(id, user.id);
-    if (!condition) {
+    // TODO: 希望刪除時可以加入 userId
+    const res = await this.service.deleteCondition({ id });
+    console.log(id);
+
+    if (Utils.isPrismaError(user)) {
       throw new ForbiddenException();
     }
-    return condition;
+
+    return res;
   }
 }

@@ -1,86 +1,80 @@
 import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import {
-  SCRAPER_RESULT_TOKEN,
-  ScraperResultDocument,
-} from "./models/scraper-result.model";
-import { FilterQuery, Model } from "mongoose";
-import { SearchDto } from "../../core/bases";
-import {
-  SEARCH_DEFAULT_LIMIT,
-  SEARCH_DEFAULT_SKIP,
-} from "../../utils/constants/search.const";
-import {
-  SCRAPER_CONDITION_TOKEN,
-  ScraperConditionDocument,
-} from "./models/scraper-condition.model";
 import { CreateConditionDto } from "./dtos/create-condition.dto";
 import { UpdateConditionDto } from "./dtos/update-condition.dto";
+import { PrismaService } from "../../core/services/prisma.service";
+import { Prisma } from "../../../prisma/client";
 
 @Injectable()
 export class ScraperService {
-  constructor(
-    @InjectModel(SCRAPER_RESULT_TOKEN)
-    private readonly resultModel: Model<ScraperResultDocument>,
-    @InjectModel(SCRAPER_CONDITION_TOKEN)
-    private readonly conditionModel: Model<ScraperConditionDocument>
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
-  async findResults(search: SearchDto, select?: any) {
-    const { skip, limit } = search;
-    const query = this.resultModel.find().select(select);
-    const documents = await query
-      .skip(skip || SEARCH_DEFAULT_SKIP)
-      .limit(limit || SEARCH_DEFAULT_LIMIT)
-      .exec();
-
-    return documents.map((document) => document?.toJSON());
+  async findResults(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.ScraperResultWhereUniqueInput;
+    where?: Prisma.ScraperResultWhereInput;
+    orderBy?: Prisma.ScraperResultOrderByWithRelationInput;
+  }) {
+    const { skip, take, cursor, where, orderBy } = params;
+    return this.prisma.scraperResult.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
   }
 
-  async findConditions(
-    filter: FilterQuery<ScraperConditionDocument>,
-    search: SearchDto,
-    select?: any
-  ) {
-    const { skip, limit } = search;
-    const query = this.conditionModel.find(filter).select(select);
-    const documents = await query
-      .skip(skip || SEARCH_DEFAULT_SKIP)
-      .limit(limit || SEARCH_DEFAULT_LIMIT)
-      .exec();
-
-    return documents.map((document) => document?.toJSON());
+  async findConditions(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.ScraperConditionWhereUniqueInput;
+    where?: Prisma.ScraperConditionWhereInput;
+    orderBy?: Prisma.ScraperConditionOrderByWithRelationInput;
+  }) {
+    const { skip, take, cursor, where, orderBy } = params;
+    return this.prisma.scraperCondition.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
   }
 
   async createCondition(dto: CreateConditionDto) {
-    const doc = await this.conditionModel.create(dto);
-    return doc?.toJSON();
+    return this.prisma.scraperCondition.create({
+      data: dto,
+    });
   }
 
-  async updateCondition(
-    conditionId: string,
-    dto: UpdateConditionDto,
-    select?: any
-  ) {
-    const query = this.conditionModel
-      .findByIdAndUpdate(conditionId, dto, { new: true })
-      .select(select);
-    const document = await query.exec();
-    return document?.toJSON();
-  }
-
-  // todo 統一換成 id
-  async deleteCondition(conditionId: string, userId: string) {
-    const document = await this.conditionModel
-      .deleteOne({ _id: conditionId, user: userId })
-      .exec();
-
-    if (!document) {
-      return;
+  async updateCondition(params: {
+    where: Prisma.ScraperConditionWhereUniqueInput;
+    data: UpdateConditionDto | Prisma.ScraperConditionUpdateInput;
+  }) {
+    try {
+      const { where, data } = params;
+      const res = await this.prisma.scraperCondition.update({
+        data,
+        where,
+      });
+      return res;
+    } catch (err) {
+      console.warn(err);
+      return err;
     }
-    return {};
   }
-  async existCondition(filter: FilterQuery<ScraperConditionDocument>) {
-    return this.conditionModel.exists(filter);
+
+  async deleteCondition(where: Prisma.ScraperConditionWhereUniqueInput) {
+    try {
+      const user = await this.prisma.scraperCondition.delete({
+        where,
+      });
+
+      return user;
+    } catch (err) {
+      console.warn(err);
+      return err;
+    }
   }
 }

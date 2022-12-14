@@ -4,6 +4,7 @@ import { ScraperController } from "./scraper.controller";
 import { ScraperResultDefinition } from "./models/scraper-result.model";
 import { MongooseModule } from "@nestjs/mongoose";
 import { ScraperConditionDefinition } from "./models/scraper-condition.model";
+import { PrismaService } from "../../core/services/prisma.service";
 
 @Module({
   imports: [
@@ -13,6 +14,6 @@ import { ScraperConditionDefinition } from "./models/scraper-condition.model";
     ]),
   ],
   controllers: [ScraperController],
-  providers: [ScraperService],
+  providers: [ScraperService, PrismaService],
 })
 export class ScraperModule {}
