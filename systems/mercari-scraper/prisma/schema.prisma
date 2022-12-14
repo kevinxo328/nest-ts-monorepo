@@ -18,6 +18,7 @@ model User {
   rtHash             String?
   rtSalt             String?
   scraper_conditions ScraperCondition[]
+  scraper_results    ScraperResult[]
 
   @@map("users")
 }
@@ -48,6 +49,8 @@ model ScraperResult {
   createdDate DateTime
   condition   ScraperCondition @relation(fields: [conditionId], references: [id], onDelete: Cascade, onUpdate: Cascade)
   conditionId String
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  userId      String
 
   @@map("scraper_results")
 }
