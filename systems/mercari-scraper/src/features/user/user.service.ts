@@ -1,7 +1,4 @@
 import { Injectable } from "@nestjs/common";
-import { InjectModel } from "@nestjs/mongoose";
-import { USER_MODEL_TOKEN, UserDocument } from "./models/user.model";
-import { Model } from "mongoose";
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { UpdateUserDto } from "./dtos/update-user.dto";
 import { PrismaService } from "../../core/services/prisma.service";
@@ -10,11 +7,7 @@ import Utils from "../../utils/utils";
 
 @Injectable()
 export class UserService {
-  constructor(
-    @InjectModel(USER_MODEL_TOKEN)
-    private readonly userModel: Model<UserDocument>,
-    private readonly prisma: PrismaService
-  ) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async createUser(dto: CreateUserDto) {
     const { username, password, role } = dto;

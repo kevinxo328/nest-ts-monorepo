@@ -1,9 +1,7 @@
 import { Module, ValidationPipe } from "@nestjs/common";
-import { ConfigModule, ConfigService } from "@nestjs/config";
-import { MongooseModule } from "@nestjs/mongoose";
+import { ConfigModule } from "@nestjs/config";
 import { APP_INTERCEPTOR, APP_PIPE } from "@nestjs/core";
 import { ResponseInterceptor } from "./interceptors/response.interceptor";
-import mongoConfig from "../config/mongo.config";
 import secretsConfig from "../config/jwt.config";
 import { UserModule } from "../features/user";
 import { AuthModule } from "../features/auth";
@@ -14,15 +12,7 @@ import { AppController } from "./app.controller";
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [mongoConfig, secretsConfig],
-    }),
-    MongooseModule.forRootAsync({
-      imports: [ConfigModule],
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        uri: config.get("mongo.url"),
-        dbName: config.get("mongo.dbName"),
-      }),
+      load: [secretsConfig],
     }),
     ScraperModule,
     UserModule,
