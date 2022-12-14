@@ -17,6 +17,8 @@ model User {
   role     User_role @default(USER)
   rtHash   String?
   rtSalt   String?
+
+  @@map("users")
 }
 
 enum User_role {

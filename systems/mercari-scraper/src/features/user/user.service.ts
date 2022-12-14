@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { USER_MODEL_TOKEN, UserDocument } from "./models/user.model";
-import { Model, FilterQuery } from "mongoose";
+import { Model } from "mongoose";
 import { CreateUserDto } from "./dtos/create-user.dto";
-import { CommonUtility } from "../../core/utils/common.utility";
 import { UpdateUserDto } from "./dtos/update-user.dto";
 import { PrismaService } from "../../core/services/prisma.service";
 import { Prisma } from "../../../prisma/client";
+import Utils from "../../utils/utils";
 
 @Injectable()
 export class UserService {
@@ -18,7 +18,7 @@ export class UserService {
 
   async createUser(dto: CreateUserDto) {
     const { username, password, role } = dto;
-    const { hash, salt } = CommonUtility.encryptBySalt(password);
+    const { hash, salt } = Utils.encryptBySalt(password);
 
     return this.prisma.user.create({
       data: {
@@ -68,7 +68,7 @@ export class UserService {
 
   async updateUser(params: {
     where: Prisma.UserWhereUniqueInput;
-    data: UpdateUserDto; // Prisma.UserUpdateInput;
+    data: UpdateUserDto | Prisma.UserUpdateInput; // TODO: 待思考 dto 與 schema 的關係
   }) {
     try {
       const { where, data } = params;
@@ -83,13 +83,14 @@ export class UserService {
     }
   }
 
-  async updateRefreshToken(userId: string, refreshToken: string) {
-    // return this.updateUser(userId, {
-    //   refreshToken: CommonUtility.encryptBySalt(refreshToken),
-    // });
-  }
-
-  existUser(filter: FilterQuery<UserDocument>) {
-    // return this.userModel.exists(filter);
+  async updateRefreshToken(userId: string, refreshToken: string | null) {
+    let rtHash = null;
+    let rtSalt = null;
+    if (refreshToken) {
+      const { hash, salt } = Utils.encryptBySalt(refreshToken);
+      rtHash = hash;
+      rtSalt = salt;
+    }
+    return this.updateUser({ where: { id: userId }, data: { rtHash, rtSalt } });
   }
 }

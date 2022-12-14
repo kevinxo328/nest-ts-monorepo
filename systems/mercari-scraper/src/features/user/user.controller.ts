@@ -20,7 +20,7 @@ import { CreateUserDto } from "./dtos/create-user.dto";
 import { UpdateUserDto } from "./dtos/update-user.dto";
 
 import { UserService } from "./user.service";
-import isPrismaError from "../../utils/IsPrismaError";
+import Utils from "../../utils/utils";
 
 @UseGuards(AccessTokenGuard)
 @Controller("users")
@@ -53,7 +53,7 @@ export class UserController {
   async deleteUser(@Param("id") id: string) {
     const user = await this.userService.deleteUser({ id });
 
-    if (isPrismaError(user)) {
+    if (Utils.isPrismaError(user)) {
       throw new ForbiddenException();
     }
 
@@ -69,7 +69,7 @@ export class UserController {
       where: { id },
     });
 
-    if (isPrismaError(user)) {
+    if (Utils.isPrismaError(user)) {
       throw new ForbiddenException();
     }
 

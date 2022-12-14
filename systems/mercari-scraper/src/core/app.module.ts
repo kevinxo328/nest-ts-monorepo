@@ -6,7 +6,7 @@ import { ResponseInterceptor } from "./interceptors/response.interceptor";
 import mongoConfig from "../config/mongo.config";
 import secretsConfig from "../config/jwt.config";
 import { UserModule } from "../features/user";
-// import { AuthModule } from "../features/auth";
+import { AuthModule } from "../features/auth";
 import { ScraperModule } from "../features/scraper/scraper.module";
 import { AppController } from "./app.controller";
 
@@ -26,7 +26,7 @@ import { AppController } from "./app.controller";
     }),
     ScraperModule,
     UserModule,
-    // AuthModule,
+    AuthModule,
   ],
   providers: [
     {
