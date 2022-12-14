@@ -14,7 +14,7 @@ import {
 import { AccessTokenGuard } from "../../core/guards";
 import { ScraperService } from "./scraper.service";
 import { SearchPipe } from "../../core/pipes";
-import { SearchDto } from "../../core/bases";
+import { SearchDto } from "../../utils/dtos/search.dto";
 import { User, UserPayload } from "../auth";
 import { CreateConditionPayload } from "./interfaces/payload.interface";
 import Utils from "../../utils/utils";
@@ -25,8 +25,14 @@ export class ScraperController {
   constructor(private readonly service: ScraperService) {}
 
   @Get()
-  async getResult(@Query(SearchPipe) query: SearchDto) {
-    return await this.service.findResults({});
+  async getResult(
+    @Query(SearchPipe) query: SearchDto,
+    @User() user: UserPayload
+  ) {
+    return await this.service.findResults({
+      ...query,
+      where: { userId: user.id },
+    });
   }
 
   @Post("/condition")
@@ -53,7 +59,10 @@ export class ScraperController {
     @User() user: UserPayload,
     @Query(SearchPipe) query: SearchDto
   ) {
-    return await this.service.findConditions({ where: { userId: user.id } });
+    return await this.service.findConditions({
+      ...query,
+      where: { userId: user.id },
+    });
   }
 
   @Patch("/condition/:id")

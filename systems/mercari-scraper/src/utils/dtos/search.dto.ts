@@ -5,5 +5,5 @@ export class SearchDto {
   skip?: number;
 
   @IsOptional()
-  limit?: number;
+  take?: number;
 }

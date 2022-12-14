@@ -14,7 +14,7 @@ import {
 
 import { SearchPipe } from "../../core/pipes";
 import { AccessTokenGuard } from "../../core/guards";
-import { SearchDto } from "../../core/bases";
+import { SearchDto } from "../../utils/dtos/search.dto";
 
 import { CreateUserDto } from "./dtos/create-user.dto";
 import { UpdateUserDto } from "./dtos/update-user.dto";
@@ -29,7 +29,7 @@ export class UserController {
 
   @Get()
   async getUsers(@Query(SearchPipe) query: SearchDto) {
-    const users = await this.userService.findUsers({});
+    const users = await this.userService.findUsers(query);
 
     return users.map(({ hash, salt, rtHash, rtSalt, ...result }) => result);
   }
