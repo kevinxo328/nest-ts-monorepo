@@ -3,7 +3,7 @@ import {
   SEARCH_DEFAULT_LIMIT,
   SEARCH_DEFAULT_SKIP,
   SEARCH_MAX_LIMIT,
-} from "../../common/constants/search.const";
+} from "../../utils/constants/search.const";
 
 @Injectable()
 export class SearchPipe implements PipeTransform<Record<string, any>> {

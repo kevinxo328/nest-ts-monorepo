@@ -1,4 +1,4 @@
-import { Role } from "../../../common/enums/role.enum";
+import { Role } from "../../../utils/enums/role.enum";
 
 
 export interface UserPayload {

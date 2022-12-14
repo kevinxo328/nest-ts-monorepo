@@ -9,7 +9,7 @@ import { SearchDto } from "../../core/bases";
 import {
   SEARCH_DEFAULT_LIMIT,
   SEARCH_DEFAULT_SKIP,
-} from "../../common/constants/search.const";
+} from "../../utils/constants/search.const";
 import {
   SCRAPER_CONDITION_TOKEN,
   ScraperConditionDocument,

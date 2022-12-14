@@ -7,7 +7,7 @@ import {
 } from "@nestjs/mongoose";
 import { Document } from "mongoose";
 
-import { Role } from "../../../common/enums/role.enum";
+import { Role } from "../../../utils/enums/role.enum";
 
 @Schema({ versionKey: false })
 export class User {
